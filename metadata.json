@@ -1,0 +1,5 @@
+{
+  "name": "PDF Page Manager",
+  "description": "An application to upload one or more PDFs, allowing users to reorder or remove pages, and then download the final combined PDF.",
+  "requestFramePermissions": []
+}
