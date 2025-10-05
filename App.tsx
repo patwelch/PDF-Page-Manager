@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
 import { PageData } from './types';
 import Header from './components/Header';
@@ -11,7 +11,7 @@ const App: React.FC = () => {
   const [pages, setPages] = useState<PageData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  
+
   const handleFilesChange = useCallback(async (files: File[]) => {
     setIsLoading(true);
     const newPages = await renderPdfToThumbnails(files);
@@ -52,7 +52,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen max-h-screen bg-slate-100">
+    <div className="relative flex flex-col h-screen max-h-screen bg-slate-100">
       {(isLoading) && <Spinner message="Processing PDFs..." />}
       {(isGenerating) && <Spinner message="Generating Final PDF..." />}
       

@@ -1,8 +1,12 @@
 import { PageData } from '../types';
+import * as pdfjsLib from 'pdfjs-dist';
+import { PDFDocument } from 'pdf-lib';
 
-// Access libraries from window object
-const pdfjsLib = (window as any).pdfjsLib;
-const { PDFDocument } = (window as any).PDFLib;
+// Set the worker script path for pdf.js
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 /**
  * Renders all pages of given PDF files into image thumbnails.
@@ -10,13 +14,6 @@ const { PDFDocument } = (window as any).PDFLib;
  * @returns A promise that resolves to an array of PageData objects.
  */
 export const renderPdfToThumbnails = async (files: File[]): Promise<PageData[]> => {
-  if (!pdfjsLib) {
-    console.error("pdf.js is not loaded!");
-    return [];
-  }
-  // The worker is imported via a script tag in index.html, so we need to tell pdf.js where to find it.
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js`;
-
   const allPages: PageData[] = [];
 
   for (const file of files) {

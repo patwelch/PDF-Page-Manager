@@ -4,9 +4,10 @@ import React, { useState, useCallback, useRef } from 'react';
 interface FileUploadProps {
   onFilesChange: (files: File[]) => void;
   isPrimary: boolean;
+  disabled?: boolean;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFilesChange, isPrimary }) => {
+const FileUpload: React.FC<FileUploadProps> = ({ onFilesChange, isPrimary, disabled = false }) => {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,6 +19,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesChange, isPrimary }) => 
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    if (disabled) return;
     e.stopPropagation();
   }, []);
   
@@ -25,6 +27,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesChange, isPrimary }) => 
     e.preventDefault();
     e.stopPropagation();
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      if (disabled) return;
       setIsDragging(true);
     }
   }, []);
@@ -39,6 +42,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesChange, isPrimary }) => 
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
+    if (disabled) return;
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       // Fix: Explicitly type `file` as `File` to resolve TypeScript inference issue.
       const pdfFiles = Array.from(e.dataTransfer.files).filter((file: File) => file.type === 'application/pdf');
@@ -69,7 +73,8 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesChange, isPrimary }) => 
         />
         <button
           onClick={handleClick}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          disabled={disabled}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-slate-400 disabled:cursor-not-allowed"
         >
           Add More Files
         </button>
@@ -87,7 +92,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesChange, isPrimary }) => 
     >
       <div 
         onClick={handleClick}
-        className={`relative w-full max-w-2xl p-10 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors duration-300 ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-slate-400 bg-slate-50 hover:bg-slate-200'}`}
+        className={`relative w-full max-w-2xl p-10 border-2 border-dashed rounded-lg text-center transition-colors duration-300 ${disabled ? 'cursor-not-allowed bg-slate-200' : 'cursor-pointer'} ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-slate-400 bg-slate-50 hover:bg-slate-200'}`}
       >
         <input
           type="file"
